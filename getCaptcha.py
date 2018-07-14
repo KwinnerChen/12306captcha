@@ -20,7 +20,7 @@ def image_download(url, proxy, agent, q_r):  # proxy是python字典， agent为�
         resp = requests.get(url, proxies=proxy, headers=header, timeout=5)
         resp.raise_for_status
         im = resp.content
-        if len(im) != 2042:
+        if len(im) > 3072:
             q_r.put(im)
             print('%s下载完成！\n' % url)
     except Exception as e:
@@ -42,7 +42,7 @@ def storage(im_path, q_r):
         md_r = md.hexdigest()  # 进行md5编码去重
         if md_r in s:
             continue
-        # 生成一个12位的随机字符串作为文件名
+        # 生成一个8位的随机字符串作为文件名
         im_name = ''.join('%02X' % random.randint(0, 255) for i in range(4))
         im_name += '.jpg'
         with open(im_path+im_name, 'wb') as im:
