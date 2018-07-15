@@ -34,20 +34,22 @@ def storage(im_path, q_r):
     except FileExistsError:
         pass
     while True:
-        md = md5()
         r = q_r.get()
         if r is None:
             break
+        md = md5()
         md.update(r)
         md_r = md.hexdigest()  # 进行md5编码去重
         if md_r in s:
             continue
+        s.add(md_r)
         # 生成一个8位的随机字符串作为文件名
         im_name = ''.join('%02X' % random.randint(0, 255) for i in range(4))
         im_name += '.jpg'
         with open(im_path+im_name, 'wb') as im:
             im.write(r)
         print('%s已存！\n' % im_name)
+        
         q_r.task_done()
 
 
